@@ -247,6 +247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfdac41882778a24f9ec49296ed30d14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  button: {fileID: 1087242839}
   countdownSprites:
   - {fileID: 531236942, guid: a0b03460beb4345eda3e09922b8f5cc7, type: 3}
   - {fileID: -1056991608, guid: a0b03460beb4345eda3e09922b8f5cc7, type: 3}
@@ -920,7 +921,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1634971564
 RectTransform:
   m_ObjectHideFlags: 0

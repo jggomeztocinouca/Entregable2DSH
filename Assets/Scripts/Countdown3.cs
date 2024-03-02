@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class Countdown3 : MonoBehaviour
 {
+    public Button button;
     public Sprite[] countdownSprites;
     public Image countdownImage; // Modificado para usar Image en lugar de GameObject
 
@@ -25,6 +26,7 @@ public class Countdown3 : MonoBehaviour
         // Asegúrate de que el componente Image esté asignado
         if (countdownImage != null)
         {
+            button.gameObject.SetActive(false);
             // Cambia los sprites en el componente Image
             for (int i = countdownSprites.Length - 1; i >= 0; i--)
             {

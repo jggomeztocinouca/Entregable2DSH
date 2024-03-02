@@ -247,6 +247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd5c499635d9c874cb9fbfd1059240fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  button: {fileID: 1087242839}
   countdownSprites:
   - {fileID: 531236942, guid: a0b03460beb4345eda3e09922b8f5cc7, type: 3}
   - {fileID: -1056991608, guid: a0b03460beb4345eda3e09922b8f5cc7, type: 3}
@@ -1017,7 +1018,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.021000002, y: 0}
   m_AnchorMax: {x: 1, y: 0.97200006}
-  m_AnchoredPosition: {x: -7, y: 8.5}
+  m_AnchoredPosition: {x: -7.0000153, y: 8.5}
   m_SizeDelta: {x: 14, y: 17}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1492184871
@@ -1075,7 +1076,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1634971564
 RectTransform:
   m_ObjectHideFlags: 0

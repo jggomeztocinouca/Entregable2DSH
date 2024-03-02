@@ -2,9 +2,11 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerMovement2 : MonoBehaviour
 {
+    public Text contador;
     public Camera cam;
     private Vector3 offset;
     public GameObject floor;
@@ -102,6 +104,7 @@ public class PlayerMovement2 : MonoBehaviour
             Destroy(other.gameObject);
             puntos++;
         }
+        contador.text = "" + (10 + puntos);
     }
 
     private void newDirection(float x, float z)

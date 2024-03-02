@@ -1,11 +1,13 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class HiddenPlayer : MonoBehaviour
 {
     public GameObject player; // Jugador original
     public GameObject floor; // Prefab del suelo
     public GameObject[] premios; // Array de premios
+    public GameObject obstaculo;
     public float probabilidadPremio = 0.1f; // Probabilidad de generar un premio
 
     // Variables para generar suelos y premios
@@ -49,7 +51,8 @@ public class HiddenPlayer : MonoBehaviour
         if (premios.Length == 0) return;
 
         int randomIndex = Random.Range(0, premios.Length);
-        Vector3 prizePosition = floorPosition + new Vector3(0, 1.7f, 0);
+        Vector3 prizePosition = floorPosition + new Vector3(0, 3.0f, 0);
+        Instantiate(obstaculo, floorPosition + new Vector3(0, 1.0f, 0), Quaternion.Euler(0, 0, 0));
         Instantiate(premios[randomIndex], prizePosition, Quaternion.Euler(-90, 0, 0));
     }
 

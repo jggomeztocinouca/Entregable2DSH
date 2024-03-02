@@ -1,12 +1,13 @@
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerMovement3 : MonoBehaviour
 {
     public Camera cam;
     private Vector3 offset;
-
+    public Text contador;
     private Vector3 currentDirection;
     private readonly float speed = 15.0f;
     private int puntos = 0;
@@ -82,5 +83,6 @@ public class PlayerMovement3 : MonoBehaviour
             Destroy(other.gameObject);
             puntos++;
         }
+        contador.text = "" + (20 + puntos);
     }
 }
