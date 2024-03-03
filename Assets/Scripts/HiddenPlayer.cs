@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class HiddenPlayer : MonoBehaviour
 {
@@ -8,37 +7,32 @@ public class HiddenPlayer : MonoBehaviour
     public GameObject floor; // Prefab del suelo
     public GameObject[] premios; // Array de premios
     public GameObject obstaculo;
-    public float probabilidadPremio = 0.1f; // Probabilidad de generar un premio
+    public float probabilidadPremio = 0.2f; // Probabilidad de generar un premio
+    private int PremioGenerado = 3; // Contador de premios generados
 
     // Variables para generar suelos y premios
-    float xValue, zValue;
-    enum lastDirectionEnum { forward, left, right };
-    private lastDirectionEnum lastDirection = lastDirectionEnum.forward;
+    private float _xValue, _zValue;
+    private enum LastDirectionEnum { Forward, Left, Right };
+    private LastDirectionEnum _lastDirection = LastDirectionEnum.Forward;
 
-    void Start()
+    private void Start()
     {
         transform.position = player.transform.position;
         GenerateInitialFloor();
     }
 
-    void Update()
+    private void Update()
     {
-        if (player.transform.position.y < 0)
-        {
-            transform.position = new Vector3(player.transform.position.x, player.transform.position.y, player.transform.position.z);
-        }
-        else
-        {
-            transform.position = new Vector3(player.transform.position.x, 0.8f, player.transform.position.z);
-        }
+        Vector3 playerPosition = player.transform.position; // Mejora de la eficiencia
+        transform.position = playerPosition.y < 0 ? new Vector3(playerPosition.x, playerPosition.y, playerPosition.z) : new Vector3(playerPosition.x, 0.8f, playerPosition.z);
     }
 
-    void GenerateInitialFloor()
+    private void GenerateInitialFloor()
     {
         for (int i = 0; i < 3; i++)
         {
-            zValue += 6.0f;
-            var newFloor = Instantiate(floor, new Vector3(xValue, 0, zValue), Quaternion.identity);
+            _zValue += 6.0f;
+            GameObject newFloor = Instantiate(floor, new Vector3(_xValue, 0, _zValue), Quaternion.identity);
             if (Random.Range(0f, 1f) < probabilidadPremio)
             {
                 GenerateRandomPrize(newFloor.transform.position);
@@ -46,14 +40,23 @@ public class HiddenPlayer : MonoBehaviour
         }
     }
 
-    void GenerateRandomPrize(Vector3 floorPosition)
+    private void GenerateRandomPrize(Vector3 floorPosition)
     {
-        if (premios.Length == 0) return;
-
-        int randomIndex = Random.Range(0, premios.Length);
-        Vector3 prizePosition = floorPosition + new Vector3(0, 3.0f, 0);
-        Instantiate(obstaculo, floorPosition + new Vector3(0, 1.0f, 0), Quaternion.Euler(0, 0, 0));
-        Instantiate(premios[randomIndex], prizePosition, Quaternion.Euler(-90, 0, 0));
+        Vector3 obstaclePosition;
+        Quaternion obstacleRotation;
+        if(_lastDirection is LastDirectionEnum.Left or LastDirectionEnum.Right)
+        {
+            obstaclePosition = floorPosition + new Vector3(0, 0.1f, -2.5f);
+            obstacleRotation = Quaternion.Euler(0, 90, 0);
+        }
+        else
+        {
+            obstaclePosition = floorPosition + new Vector3(2.5f, 0.1f, 0);
+            obstacleRotation = Quaternion.Euler(0, 0, 0);
+        }
+        Vector3 prizePosition = floorPosition + new Vector3(0, 3.50f, 0);
+        Instantiate(obstaculo, obstaclePosition, obstacleRotation);
+        Instantiate(premios[Random.Range(0, premios.Length)], prizePosition, Quaternion.Euler(-90, 0, 0));
     }
 
     private void OnCollisionExit(Collision other)
@@ -67,40 +70,61 @@ public class HiddenPlayer : MonoBehaviour
     private void NewDirection(float x, float z)
     {
         float random = Random.Range(0.0f, 1.0f);
-        if (random < 0.33 && lastDirection != lastDirectionEnum.right)
+        if (random < 0.33 && _lastDirection != LastDirectionEnum.Right)
         {
-            xValue = x + 6.0f;
-            lastDirection = lastDirectionEnum.left;
+            _xValue = x + 6.0f;
+            _lastDirection = LastDirectionEnum.Left;
         }
-        else if (random < 0.66 && lastDirection != lastDirectionEnum.left)
+        else if (random < 0.66 && _lastDirection != LastDirectionEnum.Left)
         {
-            xValue = x - 6.0f;
-            lastDirection = lastDirectionEnum.right;
+            _xValue = x - 6.0f;
+            _lastDirection = LastDirectionEnum.Right;
         }
         else
         {
-            zValue = z + 6.0f;
-            lastDirection = lastDirectionEnum.forward;
+            _zValue = z + 6.0f;
+            _lastDirection = LastDirectionEnum.Forward;
         }
     }
 
     IEnumerator DestroyFloor(GameObject floor)
     {
-        NewDirection(xValue, zValue);
-        var newFloor = Instantiate(floor, new Vector3(xValue, 0, zValue), Quaternion.identity);
-        // Decidir aleatoriamente si generar un premio en el nuevo suelo
-        if (Random.Range(0f, 1f) < probabilidadPremio)
-        {
-            GenerateRandomPrize(newFloor.transform.position);
+        if(PremioGenerado == 0){
+            NewDirection(_xValue, _zValue);
+            GameObject newFloor = Instantiate(floor, new Vector3(_xValue, 0, _zValue), Quaternion.identity);
+            // Decidir aleatoriamente si generar un premio en el nuevo suelo
+            if (Random.Range(0f, 1f) < probabilidadPremio)
+            {
+                GenerateRandomPrize(newFloor.transform.position);
+                PremioGenerado = 3;
+            }
         }
-        yield return new WaitForSeconds(0);
-        if (floor != null)
+        else
         {
-            var rb = floor.GetComponent<Rigidbody>();
-            rb.isKinematic = false;
-            rb.useGravity = true;
-            yield return new WaitForSeconds(2);
-            Destroy(floor);
+            switch (_lastDirection)
+            {
+                case LastDirectionEnum.Forward:
+                    _zValue += 6.0f;
+                    break;
+                case LastDirectionEnum.Left:
+                    _xValue += 6.0f;
+                    break;
+                case LastDirectionEnum.Right:
+                    _xValue -= 6.0f;
+                    break;
+                default:
+                    break;
+            }
+            GameObject newFloor = Instantiate(floor, new Vector3(_xValue, 0, _zValue), Quaternion.identity);
+            PremioGenerado--;
+
         }
+        if (floor == null)
+            yield break;
+        Rigidbody rb = floor.GetComponent<Rigidbody>();
+        rb.isKinematic = false;
+        rb.useGravity = true;
+        yield return new WaitForSeconds(2);
+        Destroy(floor);
     }
 }

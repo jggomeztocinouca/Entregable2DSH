@@ -9,33 +9,34 @@ public class PlayerMovement3 : MonoBehaviour
     private Vector3 offset;
     public Text contador;
     private Vector3 currentDirection;
-    private readonly float speed = 15.0f;
+    private float speed = 15.0f;
     private int puntos = 0;
 
     private bool isGrounded = true;
+    private bool obstacleHit = false;
     private Rigidbody rb;
     public float jumpForce = 7f;
 
     void Start()
     {
+        Vector3 playerPosition = transform.position;
         offset = new Vector3(0, 10, -10); // Vista "cenital"
-        cam.transform.position = transform.position + offset;
-        cam.transform.LookAt(transform.position);
+        cam.transform.position = playerPosition + offset;
+        cam.transform.LookAt(playerPosition);
         currentDirection = Vector3.forward;
         rb = GetComponent<Rigidbody>();
     }
 
     void Update()
     {
+        if (obstacleHit)
+            return;
+
         cam.transform.position = transform.position + offset;
 
         if (Input.GetKey(KeyCode.W))
         {
             currentDirection = Vector3.forward;
-        }
-        else if (Input.GetKey(KeyCode.S))
-        {
-            currentDirection = Vector3.back;
         }
         else if (Input.GetKey(KeyCode.A))
         {
@@ -45,6 +46,11 @@ public class PlayerMovement3 : MonoBehaviour
         {
             currentDirection = Vector3.right;
         }
+        else if (Input.GetKey(KeyCode.S))
+        {
+            currentDirection = Vector3.back;
+        }
+
         transform.Translate(speed * Time.deltaTime * currentDirection, Space.World);
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
@@ -58,12 +64,9 @@ public class PlayerMovement3 : MonoBehaviour
             SceneManager.LoadScene("Win");
         }
 
-        if (transform.position.y < -10)
+        if (transform.position.y < -20)
         {
-            if (transform.position.y < -20)
-            {
-                SceneManager.LoadScene("Level3");
-            }
+            SceneManager.LoadScene("PreLevel1");
         }
     }
 
@@ -82,7 +85,15 @@ public class PlayerMovement3 : MonoBehaviour
             Console.WriteLine("Prize collected");
             Destroy(other.gameObject);
             puntos++;
+            contador.text = "" + (20 + puntos);
         }
-        contador.text = "" + (20 + puntos);
+        if(other.gameObject.CompareTag("Obstacle"))
+        {
+            Console.WriteLine("Obstacle hit");
+            obstacleHit = true;
+            currentDirection = Vector3.zero;
+            rb.velocity = Vector3.zero; // Detiene el movimiento en todas las direcciones
+            rb.angularVelocity = Vector3.zero; // Detiene la rotación
+        }
     }
 }

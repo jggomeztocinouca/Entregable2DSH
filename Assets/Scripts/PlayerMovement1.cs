@@ -41,12 +41,10 @@ public class PlayerMovement1 : MonoBehaviour
             SceneManager.LoadScene("PreLevel2");
         }
 
-        if (transform.position.y < -10)
+
+        if (transform.position.y < -20)
         {
-            if (transform.position.y < -20)
-            {
-                SceneManager.LoadScene("Level1");
-            }
+            SceneManager.LoadScene("PreLevel1");
         }
     }
 

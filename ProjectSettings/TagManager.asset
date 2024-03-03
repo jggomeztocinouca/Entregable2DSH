@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Floor
   - Prize
+  - Obstacle
   layers:
   - Default
   - TransparentFX
