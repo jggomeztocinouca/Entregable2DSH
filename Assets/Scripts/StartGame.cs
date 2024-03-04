@@ -1,11 +1,12 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class StartGame : MonoBehaviour
 {
+    public AudioSource audioSource;
+    public AudioClip clip;
 
     void Start()
     {
@@ -14,29 +15,40 @@ public class StartGame : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void StartMatch()
     {
-        SceneManager.LoadScene("PreLevel1");
+        StartCoroutine(PlaySoundAndLoadScene("PreLevel1"));
     }
 
     public void BackToMenu()
     {
-        SceneManager.LoadScene("MainMenu");
+        StartCoroutine(PlaySoundAndLoadScene("MainMenu"));
     }
 
     public void GoToLevel1()
     {
-        SceneManager.LoadScene("PreLevel1");
+        StartCoroutine(PlaySoundAndLoadScene("PreLevel1"));
     }
+
     public void GoToLevel2()
     {
-        SceneManager.LoadScene("PreLevel2");
+        StartCoroutine(PlaySoundAndLoadScene("PreLevel2"));
     }
+
     public void GoToLevel3()
     {
-        SceneManager.LoadScene("PreLevel3");
+        StartCoroutine(PlaySoundAndLoadScene("PreLevel3"));
+    }
+
+    IEnumerator PlaySoundAndLoadScene(string sceneName)
+    {
+        audioSource.PlayOneShot(clip);
+        // Espera a que termine el sonido
+        yield return new WaitForSeconds(clip.length);
+        // Carga la escena después de que termine el sonido
+        SceneManager.LoadScene(sceneName);
     }
 }

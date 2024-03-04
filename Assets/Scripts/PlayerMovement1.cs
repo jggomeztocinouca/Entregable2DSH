@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class PlayerMovement1 : MonoBehaviour
 {
+    public AudioSource source;
+    public AudioClip clip;
+
     public Text contador;
     public Camera cam;
     private Vector3 offset;
@@ -88,6 +91,7 @@ public class PlayerMovement1 : MonoBehaviour
             Console.WriteLine("Prize collected");
             Destroy(other.gameObject);
             puntos++;
+            source.PlayOneShot(clip);
         }
         contador.text = "" + puntos;
     }

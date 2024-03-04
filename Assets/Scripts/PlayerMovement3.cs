@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class PlayerMovement3 : MonoBehaviour
 {
+    public AudioSource source;
+    public AudioClip clipPrize;
+    public AudioClip clipObstacle;
+
     public Camera cam;
     private Vector3 offset;
     public Text contador;
@@ -86,6 +90,7 @@ public class PlayerMovement3 : MonoBehaviour
             Destroy(other.gameObject);
             puntos++;
             contador.text = "" + (20 + puntos);
+            source.PlayOneShot(clipPrize);
         }
         if(other.gameObject.CompareTag("Obstacle"))
         {
@@ -94,6 +99,7 @@ public class PlayerMovement3 : MonoBehaviour
             currentDirection = Vector3.zero;
             rb.velocity = Vector3.zero; // Detiene el movimiento en todas las direcciones
             rb.angularVelocity = Vector3.zero; // Detiene la rotación
+            source.PlayOneShot(clipObstacle);
         }
     }
 }

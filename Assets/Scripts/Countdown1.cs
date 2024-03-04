@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class Countdown1 : MonoBehaviour
 {
+    public AudioClip clip;
+    public AudioSource source;
+
     public Button button;
     public Sprite[] countdownSprites;
     public Image countdownImage; // Modificado para usar Image en lugar de GameObject
@@ -26,6 +29,7 @@ public class Countdown1 : MonoBehaviour
         // Asegúrate de que el componente Image esté asignado
         if (countdownImage != null)
         {
+            source.PlayOneShot(clip);
             button.gameObject.SetActive(false);
             // Cambia los sprites en el componente Image
             for (int i = countdownSprites.Length - 1; i >= 0; i--)
