@@ -33,26 +33,25 @@ public class PlayerMovement3 : MonoBehaviour
 
     void Update()
     {
-        if (obstacleHit)
-            return;
-
         cam.transform.position = transform.position + offset;
-
-        if (Input.GetKey(KeyCode.W))
+        if (!obstacleHit)
         {
-            currentDirection = Vector3.forward;
-        }
-        else if (Input.GetKey(KeyCode.A))
-        {
-            currentDirection = Vector3.left;
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            currentDirection = Vector3.right;
-        }
-        else if (Input.GetKey(KeyCode.S))
-        {
-            currentDirection = Vector3.back;
+            if (Input.GetKey(KeyCode.W))
+            {
+                currentDirection = Vector3.forward;
+            }
+            else if (Input.GetKey(KeyCode.A))
+            {
+                currentDirection = Vector3.left;
+            }
+            else if (Input.GetKey(KeyCode.D))
+            {
+                currentDirection = Vector3.right;
+            }
+            else if (Input.GetKey(KeyCode.S))
+            {
+                currentDirection = Vector3.back;
+            }
         }
 
         transform.Translate(speed * Time.deltaTime * currentDirection, Space.World);
@@ -70,7 +69,7 @@ public class PlayerMovement3 : MonoBehaviour
 
         if (transform.position.y < -20)
         {
-            SceneManager.LoadScene("PreLevel1");
+            SceneManager.LoadScene("PreLevel3");
         }
     }
 
@@ -80,6 +79,11 @@ public class PlayerMovement3 : MonoBehaviour
         {
             isGrounded = true;
         }
+    }
+
+    private void RestartLevel()
+    {
+        SceneManager.LoadScene("Level3");
     }
 
     private void OnTriggerEnter(Collider other)
@@ -92,7 +96,7 @@ public class PlayerMovement3 : MonoBehaviour
             contador.text = "" + (20 + puntos);
             source.PlayOneShot(clipPrize);
         }
-        if(other.gameObject.CompareTag("Obstacle"))
+        if (other.gameObject.CompareTag("Obstacle"))
         {
             Console.WriteLine("Obstacle hit");
             obstacleHit = true;
@@ -100,6 +104,8 @@ public class PlayerMovement3 : MonoBehaviour
             rb.velocity = Vector3.zero; // Detiene el movimiento en todas las direcciones
             rb.angularVelocity = Vector3.zero; // Detiene la rotación
             source.PlayOneShot(clipObstacle);
+            // Espera 2 segundos y reinicia el nivel
+            Invoke("RestartLevel", 2);
         }
     }
 }

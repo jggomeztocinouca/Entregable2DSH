@@ -8,7 +8,7 @@ public class HiddenPlayer : MonoBehaviour
     public GameObject[] premios; // Array de premios
     public GameObject obstaculo;
     public float probabilidadPremio = 0.2f; // Probabilidad de generar un premio
-    private int PremioGenerado = 3; // Contador de premios generados
+    private int CasillasVacias = 5; // Contador de premios generados
 
     // Variables para generar suelos y premios
     private float _xValue, _zValue;
@@ -44,7 +44,7 @@ public class HiddenPlayer : MonoBehaviour
     {
         Vector3 obstaclePosition;
         Quaternion obstacleRotation;
-        if(_lastDirection is LastDirectionEnum.Left or LastDirectionEnum.Right)
+        if (_lastDirection is LastDirectionEnum.Left or LastDirectionEnum.Right)
         {
             obstaclePosition = floorPosition + new Vector3(0, 0.1f, -2.5f);
             obstacleRotation = Quaternion.Euler(0, 90, 0);
@@ -55,8 +55,11 @@ public class HiddenPlayer : MonoBehaviour
             obstacleRotation = Quaternion.Euler(0, 0, 0);
         }
         Vector3 prizePosition = floorPosition + new Vector3(0, 3.50f, 0);
-        Instantiate(obstaculo, obstaclePosition, obstacleRotation);
-        Instantiate(premios[Random.Range(0, premios.Length)], prizePosition, Quaternion.Euler(-90, 0, 0));
+        if (CasillasVacias == 0)
+        {
+            Instantiate(obstaculo, obstaclePosition, obstacleRotation);
+            Instantiate(premios[Random.Range(0, premios.Length)], prizePosition, Quaternion.Euler(-90, 0, 0));
+        }
     }
 
     private void OnCollisionExit(Collision other)
@@ -89,14 +92,15 @@ public class HiddenPlayer : MonoBehaviour
 
     IEnumerator DestroyFloor(GameObject floor)
     {
-        if(PremioGenerado == 0){
+        if (CasillasVacias == 0)
+        {
             NewDirection(_xValue, _zValue);
             GameObject newFloor = Instantiate(floor, new Vector3(_xValue, 0, _zValue), Quaternion.identity);
             // Decidir aleatoriamente si generar un premio en el nuevo suelo
             if (Random.Range(0f, 1f) < probabilidadPremio)
             {
                 GenerateRandomPrize(newFloor.transform.position);
-                PremioGenerado = 3;
+                CasillasVacias = 3;
             }
         }
         else
@@ -115,8 +119,9 @@ public class HiddenPlayer : MonoBehaviour
                 default:
                     break;
             }
-            GameObject newFloor = Instantiate(floor, new Vector3(_xValue, 0, _zValue), Quaternion.identity);
-            PremioGenerado--;
+
+            Instantiate(floor, new Vector3(_xValue, 0, _zValue), Quaternion.identity);
+            CasillasVacias--;
 
         }
         if (floor == null)
