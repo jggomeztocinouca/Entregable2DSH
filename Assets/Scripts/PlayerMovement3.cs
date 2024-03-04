@@ -83,7 +83,7 @@ public class PlayerMovement3 : MonoBehaviour
 
     private void RestartLevel()
     {
-        SceneManager.LoadScene("Level3");
+        SceneManager.LoadScene("PreLevel3");
     }
 
     private void OnTriggerEnter(Collider other)
